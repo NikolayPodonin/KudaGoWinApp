@@ -51,7 +51,91 @@ namespace KudaGoWinApp
                 //        build.AppendLine();
                 //    }
                 //}
-                listBox.Items.Add(convert.results[0].short_title);
+                //listBox.Items.Add(convert.results[0].short_title);
+
+                //lv_Images.Items
+
+                int i = 0;            
+                foreach (Event ev in convert.results)
+                {
+                    if(ev.images.Count > 0)
+                    {
+                        System.Windows.Controls.Image image = new System.Windows.Controls.Image();
+                        Uri myUri = new Uri(ev.images[0].image);
+                        switch (myUri.Segments.Last().Substring(myUri.Segments.Last().Count() - 4, 3))
+                        {
+                            case "jpg":
+                                {
+                                    //dec = (JpegBitmapDecoder)dec;
+                                    JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                                    BitmapSource bs = dec.Frames[0];
+                                    image.Source = bs;
+                                    break;
+                                }
+                            case "peg":
+                                {
+                                    //dec = (JpegBitmapDecoder)dec;
+                                    JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                                    BitmapSource bs = dec.Frames[0];
+                                    image.Source = bs;
+                                    break;
+                                }
+                            case "bmp":
+                                {
+                                    //dec = (BmpBitmapDecoder)dec;
+                                    BmpBitmapDecoder dec = new BmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                                    BitmapSource bs = dec.Frames[0];
+                                    image.Source = bs;
+                                    break;
+                                }
+                            case "png":
+                                {
+                                    //dec = (PngBitmapDecoder)dec;
+                                    PngBitmapDecoder dec = new PngBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                                    BitmapSource bs = dec.Frames[0];
+                                    image.Source = bs;
+                                    break;
+                                }
+                            case "gif":
+                                {
+                                    //dec = (GifBitmapDecoder)dec;
+                                    GifBitmapDecoder dec = new GifBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                                    BitmapSource bs = dec.Frames[0];
+                                    image.Source = bs;
+                                    break;
+                                }
+                            case "iff":
+                                {
+                                    //dec = (TiffBitmapDecoder)dec;
+                                    TiffBitmapDecoder dec = new TiffBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                                    BitmapSource bs = dec.Frames[0];
+                                    image.Source = bs;
+                                    break;
+                                }
+                            case "wmp":
+                                {
+                                    //dec = (WmpBitmapDecoder)dec;
+                                    WmpBitmapDecoder dec = new WmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                                    BitmapSource bs = dec.Frames[0];
+                                    image.Source = bs;
+                                    break;
+                                }
+                            default:
+                                {
+                                    break;
+                                }
+                        }
+
+                        Binding newBinding = new Binding();
+                        newBinding.ElementName = "g_Image";
+                        newBinding.Path = new PropertyPath("Image");
+                        image.SetBinding(System.Windows.Controls.Image.WidthProperty, newBinding);
+
+                       // lv_Images.Items.Add(image);
+                    }
+                }
+
+               // lv_Images.Items.Add(image);
             }
         }
     }

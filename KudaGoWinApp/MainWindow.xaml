@@ -7,6 +7,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="242" Margin="54,32,0,0" VerticalAlignment="Top" Width="192"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Column="0" Height="auto" Width="auto">
+            <Grid x:Name="g_Image" Height="Auto" Width="Auto"/>
+        </ScrollViewer>
     </Grid>
 </Window>
