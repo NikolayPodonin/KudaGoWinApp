@@ -31,19 +31,19 @@
                         <ColumnDefinition Width="14*"/>
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="1" Name="i_Prewiew" OpacityMask="#FF0F0D0D" />
-                    <Button x:Name="b_Right" Grid.Column="2" Width="auto" Height="auto" Click="b_Right_Click">
+                    <Button x:Name="b_Right" Grid.Column="2" Width="auto" Height="auto" Click="b_Right_Click" Foreground="White" BorderBrush="#00000000">
                         <Button.Background>
                             <ImageBrush ImageSource=".\resources\Стрелка_вправо.jpg" Stretch="Uniform" TileMode="None"/>
                         </Button.Background>
                     </Button>
-                    <Button x:Name="b_Left" Grid.Column="0" Width="auto" Height="auto" Click="b_Left_Click">
+                    <Button x:Name="b_Left" Grid.Column="0" Width="auto" Height="auto" Click="b_Left_Click" BorderBrush="#00000000">
                         <Button.Background>
                             <ImageBrush ImageSource=".\resources\Стрелка_влево.jpg" Stretch="Uniform" TileMode="None"/>
                         </Button.Background>
                     </Button>
                 </Grid>
                 <TextBlock Name="tb_FullDescript" Grid.Row="3" Margin="5,2" />
-                <Label Content="Даты проведения: " Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Padding="1" />
+                <Label Content="Даты проведения: " Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Padding="1" Margin="5,0,0,0" />
                 <TextBlock Name="tb_Dates" Grid.Row="4" Margin="112,2,56,2" HorizontalAlignment="Left"/>
                 <TextBlock Name="tb_Place" Grid.Row="5" Margin="5,2"/>
                 <Label Name="l_Price" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,2,0,2" />

@@ -1,20 +1,10 @@
 ﻿using KudaGoClassLibrary;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace KudaGoWinApp
 {
@@ -50,7 +40,7 @@ namespace KudaGoWinApp
                 tb_FullDescript.Text = ev.body_text;
                 tb_FullDescript.TextWrapping = TextWrapping.Wrap;
 
-                i_Prewiew.Source = ImageSourceReturn(ev.images[0].image);
+                i_Prewiew.Source = StaticClass.ImageSourceReturn(ev.images[0].image);
                 i_Prewiew.Uid = 0.ToString();
 
                 foreach (var date in ev.dates)
@@ -84,69 +74,14 @@ namespace KudaGoWinApp
                 
                 
             }
-        }
-               
-
-        private BitmapSource ImageSourceReturn(string uri)
-        {
-            Uri myUri = new Uri(uri);
-            switch (myUri.Segments.Last().Substring(myUri.Segments.Last().Count() - 3, 3))
-            {
-                case "jpg":
-                    {
-                        JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
-                        return bs;
-                    }
-                case "peg":
-                    {
-                        JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
-                        return bs;
-                    }
-                case "bmp":
-                    {
-                        BmpBitmapDecoder dec = new BmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
-                        return bs;
-                    }
-                case "png":
-                    {
-                        PngBitmapDecoder dec = new PngBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
-                        return bs;
-                    }
-                case "gif":
-                    {
-                        GifBitmapDecoder dec = new GifBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
-                        return bs;
-                    }
-                case "iff":
-                    {
-                        TiffBitmapDecoder dec = new TiffBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
-                        return bs;
-                    }
-                case "wmp":
-                    {
-                        WmpBitmapDecoder dec = new WmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
-                        return bs;
-                    }
-                default:
-                    {
-                        return null;
-                    }
-            }
-        }
+        }        
 
         private void b_Right_Click(object sender, RoutedEventArgs e)
         {
             int i = int.Parse(i_Prewiew.Uid) + 1;
             if (i < ev.images.Count)
             {
-                var newImage = ImageSourceReturn(ev.images[i].image);
+                var newImage = StaticClass.ImageSourceReturn(ev.images[i].image);
                 if (newImage != null)
                 {
                     i_Prewiew.Source = newImage;
@@ -161,7 +96,7 @@ namespace KudaGoWinApp
             int i = int.Parse(i_Prewiew.Uid) - 1;
             if (i >= 0)
             {
-                var newImage = ImageSourceReturn(ev.images[i].image);
+                var newImage = StaticClass.ImageSourceReturn(ev.images[i].image);
                 if (newImage != null)
                 {
                     i_Prewiew.Source = newImage;

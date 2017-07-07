@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace KudaGoClassLibrary
 {
@@ -84,7 +85,7 @@ namespace KudaGoClassLibrary
         public bool is_continuous;
         public bool is_endless;
         public bool is_startless;
-        public List<string> schedules;
+        public List<Schedule> schedules;
         public bool use_place_schedule;
 
         public string start_date
@@ -108,6 +109,14 @@ namespace KudaGoClassLibrary
             }
         }
     }
+
+    public class Schedule
+    {
+        public string start_time;
+        public string end_time;
+        public List<DayOfWeek> days_of_week;
+    }
+
     public class Image
     {
         public string image;
@@ -150,5 +159,5 @@ namespace KudaGoClassLibrary
             public string item_url;
             public bool disable_comments;
         }
-    }
+    }    
 }

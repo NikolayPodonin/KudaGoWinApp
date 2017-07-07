@@ -17,7 +17,7 @@
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ScrollViewer Grid.Column="0" Height="auto" Width="auto">
+        <ScrollViewer Grid.Column="0" Height="auto" Width="auto" ScrollChanged="ScrollViewer_ScrollChanged">
             <Grid x:Name="g_Image" Height="Auto" Width="Auto"/>
         </ScrollViewer>
     </Grid>

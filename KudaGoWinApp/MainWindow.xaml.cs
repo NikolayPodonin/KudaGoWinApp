@@ -23,14 +23,17 @@ namespace KudaGoWinApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        string nextPage;
+        int i = 0;
+
         public MainWindow()
         {
             InitializeComponent();
-            MainFunction();
-        }
-                
+            string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates";
+            MainFunction(link);
+        }        
 
-        public void MainFunction()
+        public void MainFunction(string link)
         {
             using (var webClient = new WebClient())
             {
@@ -38,80 +41,26 @@ namespace KudaGoWinApp
                 //webClient.QueryString.Add("lang", "en");
                 //webClient.QueryString.Add("fields", "name");
                 webClient.Encoding = Encoding.UTF8;
-                var response = webClient.DownloadString(@"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates");
+                var response = webClient.DownloadString(link);
                 
-                var convert = JsonConvert.DeserializeObject<EventsParsing>(response);
+                var events = JsonConvert.DeserializeObject<EventsParsing>(response);
+                nextPage = events.next;
 
                 Style labelStyle = new Style();
                 labelStyle.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
                 labelStyle.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.White) });
 
                 //l_Name.FontFamily = new FontFamily("Segoe UI Semibold");
-                int i = 0;
-                foreach (Event ev in convert.results)
+                
+                foreach (Event ev in events.results)
                 {
                     if(ev.images.Count > 0)
                     {
-                        System.Windows.Controls.Image image = new System.Windows.Controls.Image();
-                        Uri myUri = new Uri(ev.images[0].image);
-                        switch (myUri.Segments.Last().Substring(myUri.Segments.Last().Count() - 3, 3))
-                        {
-                            case "jpg":
-                                {
-                                    JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                                    BitmapSource bs = dec.Frames[0];
-                                    image.Source = bs;
-                                    break;
-                                }
-                            case "peg":
-                                {
-                                    JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                                    BitmapSource bs = dec.Frames[0];
-                                    image.Source = bs;
-                                    break;
-                                }
-                            case "bmp":
-                                {
-                                    BmpBitmapDecoder dec = new BmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                                    BitmapSource bs = dec.Frames[0];
-                                    image.Source = bs;
-                                    break;
-                                }
-                            case "png":
-                                {
-                                    PngBitmapDecoder dec = new PngBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                                    BitmapSource bs = dec.Frames[0];
-                                    image.Source = bs;
-                                    break;
-                                }
-                            case "gif":
-                                {
-                                    GifBitmapDecoder dec = new GifBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                                    BitmapSource bs = dec.Frames[0];
-                                    image.Source = bs;
-                                    break;
-                                }
-                            case "iff":
-                                {
-                                    TiffBitmapDecoder dec = new TiffBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                                    BitmapSource bs = dec.Frames[0];
-                                    image.Source = bs;
-                                    break;
-                                }
-                            case "wmp":
-                                {
-                                    WmpBitmapDecoder dec = new WmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                                    BitmapSource bs = dec.Frames[0];
-                                    image.Source = bs;
-                                    break;
-                                }
-                            default:
-                                {
-                                    break;
-                                }
-                        }
                         g_Image.RowDefinitions.Add(new RowDefinition());
 
+                        System.Windows.Controls.Image image = new System.Windows.Controls.Image();
+                        image.Source = StaticClass.ImageSourceReturn(ev.images[0].image);
+                        
                         int n = g_Image.Children.Add(image);
                         Grid.SetRow(g_Image.Children[n], i);
                         g_Image.Children[n].Uid = "_1_" + ev.id;
@@ -145,6 +94,8 @@ namespace KudaGoWinApp
                 }                
             }
         }
+
+
         
         private void NewRD_MouseUp(object sender, EventArgs e)
         {
@@ -152,6 +103,13 @@ namespace KudaGoWinApp
             dw.Show();
         }
 
-        
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var scrollViewer = (ScrollViewer)sender;
+            if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+            {
+                MainFunction(nextPage);
+            }
+        }
     }
 }
