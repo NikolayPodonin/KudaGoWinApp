@@ -38,7 +38,7 @@ namespace KudaGoWinApp
                 //webClient.QueryString.Add("lang", "en");
                 //webClient.QueryString.Add("fields", "name");
                 webClient.Encoding = Encoding.UTF8;
-                var response = webClient.DownloadString(@"https://kudago.com/public-api/v1.3/events/?fields=id,publication_date,dates,title,short_title,slug,place,description,body_text,location,categories,tagline,age_restriction,price,is_free,images,favorites_count,comments_count,site_url,tags,participants&expand=place,dates,location");
+                var response = webClient.DownloadString(@"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates");
                 
                 var convert = JsonConvert.DeserializeObject<EventsParsing>(response);
 
@@ -114,15 +114,20 @@ namespace KudaGoWinApp
 
                         int n = g_Image.Children.Add(image);
                         Grid.SetRow(g_Image.Children[n], i);
+                        g_Image.Children[n].Uid = "_1_" + ev.id;
+                        g_Image.Children[n].MouseUp += NewRD_MouseUp;
+                        g_Image.Children[n].TouchUp += NewRD_MouseUp;
 
                         Label l_Name = new Label();
                         l_Name.Content = ev.short_title;
                         l_Name.Margin = new Thickness(10, 20, 0, 0);
                         l_Name.Style = labelStyle;
-
                         n = g_Image.Children.Add(l_Name);
                         Grid.SetRow(g_Image.Children[n], i);
-                        
+                        g_Image.Children[n].Uid = "_2_" + ev.id;
+                        g_Image.Children[n].MouseUp += NewRD_MouseUp;
+                        g_Image.Children[n].TouchUp += NewRD_MouseUp;
+
                         Label l_Date = new Label();
                         l_Date.Content = ev.dates[0].StartDate.ToShortDateString();
                         l_Date.VerticalAlignment = VerticalAlignment.Bottom;
@@ -131,11 +136,22 @@ namespace KudaGoWinApp
                         l_Date.Style = labelStyle;
                         n = g_Image.Children.Add(l_Date);
                         Grid.SetRow(g_Image.Children[n], i);
+                        g_Image.Children[n].Uid = "_3_" + ev.id;
+                        g_Image.Children[n].MouseUp += NewRD_MouseUp;
+                        g_Image.Children[n].TouchUp += NewRD_MouseUp;
 
                         i++;
                     }
                 }                
             }
         }
+        
+        private void NewRD_MouseUp(object sender, EventArgs e)
+        {
+            DetailsWindow dw = new DetailsWindow(((UIElement)sender).Uid.Remove(0, 3));
+            dw.Show();
+        }
+
+        
     }
 }

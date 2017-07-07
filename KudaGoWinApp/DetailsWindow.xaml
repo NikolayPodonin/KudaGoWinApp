@@ -1,0 +1,55 @@
+﻿<Window x:Class="KudaGoWinApp.DetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KudaGoWinApp"
+        mc:Ignorable="d"
+        Title="DetailsWindow" Height="531.14" Width="603.302">
+    <Grid>
+        <ScrollViewer HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <ScrollViewer.Background>
+                <ImageBrush/>
+            </ScrollViewer.Background>
+            <Grid Height="auto" Width="auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Name="rd_Head" Height="auto"/>
+                    <RowDefinition Name="rd_ShortDescript" Height="auto"/>
+                    <RowDefinition Name="rd_Images" Height="1*"/>
+                    <RowDefinition Name="rd_FullDescript" Height="auto"/>
+                    <RowDefinition Name="rd_Dates" Height="auto"/>
+                    <RowDefinition Name="rd_Place" Height="auto"/>
+                    <RowDefinition Name="rd_Others" Height="auto"/>
+                </Grid.RowDefinitions>
+                <Label Name="l_Head" Grid.Row="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,2,5,2" />
+                <TextBlock Name="tb_Descript" Grid.Row="1" Margin="5,2,5,2" />
+
+                <Grid Grid.Row="2" Height="auto" Width="auto">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="14*"/>
+                        <ColumnDefinition Width="245*"/>
+                        <ColumnDefinition Width="14*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="1" Name="i_Prewiew" OpacityMask="#FF0F0D0D" />
+                    <Button x:Name="b_Right" Grid.Column="2" Width="auto" Height="auto" Click="b_Right_Click">
+                        <Button.Background>
+                            <ImageBrush ImageSource=".\resources\Стрелка_вправо.jpg" Stretch="Uniform" TileMode="None"/>
+                        </Button.Background>
+                    </Button>
+                    <Button x:Name="b_Left" Grid.Column="0" Width="auto" Height="auto" Click="b_Left_Click">
+                        <Button.Background>
+                            <ImageBrush ImageSource=".\resources\Стрелка_влево.jpg" Stretch="Uniform" TileMode="None"/>
+                        </Button.Background>
+                    </Button>
+                </Grid>
+                <TextBlock Name="tb_FullDescript" Grid.Row="3" Margin="5,2" />
+                <Label Content="Даты проведения: " Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Padding="1" />
+                <TextBlock Name="tb_Dates" Grid.Row="4" Margin="112,2,56,2" HorizontalAlignment="Left"/>
+                <TextBlock Name="tb_Place" Grid.Row="5" Margin="5,2"/>
+                <Label Name="l_Price" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,2,0,2" />
+                <Label Name="l_Age" Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,5,2" />
+            </Grid>
+        </ScrollViewer>
+
+    </Grid>
+</Window>

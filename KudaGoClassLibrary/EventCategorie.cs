@@ -52,22 +52,32 @@ namespace KudaGoClassLibrary
         public string timezone;
         public Coords coords;
         public string language;
-        public string currency;
+        public string currency;  
+    }
 
-        public class Coords
-        {
-            public double lat;
-            public double lon;
-        }       
+    public class Coords
+    {
+        public double lat;
+        public double lon;
     }
 
     public class Place
     {
         public int Id;
+        public string title;
+        public string slug;
+        public string address;
+        public string phone;
+        public bool is_stub;
+        public string site_url;
+        public Coords coords;
+        public string subway;
+        public bool is_closed;
+        public string location;
     }
     public class Dates
     {
-        public DateTime StartDate; //start_date":"2017-07-05","start_time":"17:30:00","start":1499265000,"end_date":null,"end_time":null,"end":1499265000,"is_continuous":false,"is_endless":false,"is_startless":false,"schedules":[],"use_place_schedule":false
+        public DateTime StartDate; 
         public DateTime EndDate;
         public string start;
         public string end;
