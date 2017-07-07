@@ -83,7 +83,7 @@ namespace KudaGoClassLibrary
             {
                 if(value != null)
                 {
-                    DateTime StartDate = new DateTime(Int32.Parse(value.Substring(0, 4)), Int32.Parse(value.Substring(5, 2)), Int32.Parse(value.Substring(8, 2)));
+                    StartDate = new DateTime(Int32.Parse(value.Substring(0, 4)), Int32.Parse(value.Substring(5, 2)), Int32.Parse(value.Substring(8, 2)));
                 }                
             }
         }
@@ -93,7 +93,7 @@ namespace KudaGoClassLibrary
             {
                 if (value != null)
                 {
-                    DateTime EndDate = new DateTime(Int32.Parse(value.Substring(0, 4)), Int32.Parse(value.Substring(5, 2)), Int32.Parse(value.Substring(8, 2)));
+                    EndDate = new DateTime(Int32.Parse(value.Substring(0, 4)), Int32.Parse(value.Substring(5, 2)), Int32.Parse(value.Substring(8, 2)));
                 }
             }
         }

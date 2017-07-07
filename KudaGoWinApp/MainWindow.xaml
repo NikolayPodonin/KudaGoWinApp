@@ -12,7 +12,9 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <ScrollViewer Grid.Column="0" Height="auto" Width="auto">
-            <Grid x:Name="g_Image" Height="Auto" Width="Auto"/>
+            <Grid x:Name="g_Image" Height="Auto" Width="Auto">
+                <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="278,120,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </Window>

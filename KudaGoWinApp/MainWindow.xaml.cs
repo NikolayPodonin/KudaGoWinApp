@@ -28,6 +28,7 @@ namespace KudaGoWinApp
             InitializeComponent();
             MainFunction();
         }
+                
 
         public void MainFunction()
         {
@@ -40,7 +41,13 @@ namespace KudaGoWinApp
                 var response = webClient.DownloadString(@"https://kudago.com/public-api/v1.3/events/?fields=id,publication_date,dates,title,short_title,slug,place,description,body_text,location,categories,tagline,age_restriction,price,is_free,images,favorites_count,comments_count,site_url,tags,participants&expand=place,dates,location");
                 
                 var convert = JsonConvert.DeserializeObject<EventsParsing>(response);
-                
+
+                Style labelStyle = new Style();
+                labelStyle.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
+                labelStyle.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.White) });
+
+                //l_Name.FontFamily = new FontFamily("Segoe UI Semibold");
+                int i = 0;
                 foreach (Event ev in convert.results)
                 {
                     if(ev.images.Count > 0)
@@ -103,23 +110,29 @@ namespace KudaGoWinApp
                                     break;
                                 }
                         }
+                        g_Image.RowDefinitions.Add(new RowDefinition());
 
                         int n = g_Image.Children.Add(image);
+                        Grid.SetRow(g_Image.Children[n], i);
 
                         Label l_Name = new Label();
                         l_Name.Content = ev.short_title;
                         l_Name.Margin = new Thickness(10, 20, 0, 0);
+                        l_Name.Style = labelStyle;
+
+                        n = g_Image.Children.Add(l_Name);
+                        Grid.SetRow(g_Image.Children[n], i);
                         
                         Label l_Date = new Label();
-                        l_Date.Content = ev.dates[0].StartDate.Date;
+                        l_Date.Content = ev.dates[0].StartDate.ToShortDateString();
+                        l_Date.VerticalAlignment = VerticalAlignment.Bottom;
+                        l_Date.HorizontalAlignment = HorizontalAlignment.Right;
+                        l_Date.Margin = new Thickness(0, 0, 10, 20);
+                        l_Date.Style = labelStyle;
+                        n = g_Image.Children.Add(l_Date);
+                        Grid.SetRow(g_Image.Children[n], i);
 
-                        g_Image.RowDefinitions.Add(new RowDefinition());
-                        
-                        Grid.SetRow(g_Image.Children[n], n);
-                        Grid.SetRow(l_Name, n);
-                        Grid.SetRow(l_Date, n);
-
-
+                        i++;
                     }
                 }                
             }
