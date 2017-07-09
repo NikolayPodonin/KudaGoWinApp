@@ -17,43 +17,99 @@ namespace KudaGoClassLibrary
                 case "jpg":
                     {
                         JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
+                        BitmapSource bs;
+                        if (dec.Preview != null)
+                        {
+                             bs = dec.Preview;
+                        }
+                        else
+                        {
+                             bs = dec.Frames[0];
+                        }
                         return bs;
                     }
                 case "peg":
                     {
                         JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
+                        BitmapSource bs;
+                        if (dec.Preview != null)
+                        {
+                            bs = dec.Preview;
+                        }
+                        else
+                        {
+                            bs = dec.Frames[0];
+                        }
                         return bs;
                     }
                 case "bmp":
                     {
                         BmpBitmapDecoder dec = new BmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
+                        BitmapSource bs;
+                        if (dec.Preview != null)
+                        {
+                            bs = dec.Preview;
+                        }
+                        else
+                        {
+                            bs = dec.Frames[0];
+                        }
                         return bs;
                     }
                 case "png":
                     {
                         PngBitmapDecoder dec = new PngBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
+                        BitmapSource bs;
+                        if (dec.Preview != null)
+                        {
+                            bs = dec.Preview;
+                        }
+                        else
+                        {
+                            bs = dec.Frames[0];
+                        }
                         return bs;
                     }
                 case "gif":
                     {
                         GifBitmapDecoder dec = new GifBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
+                        BitmapSource bs;
+                        if (dec.Preview != null)
+                        {
+                            bs = dec.Preview;
+                        }
+                        else
+                        {
+                            bs = dec.Frames[0];
+                        }
                         return bs;
                     }
                 case "iff":
                     {
                         TiffBitmapDecoder dec = new TiffBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
+                        BitmapSource bs;
+                        if (dec.Preview != null)
+                        {
+                            bs = dec.Preview;
+                        }
+                        else
+                        {
+                            bs = dec.Frames[0];
+                        }
                         return bs;
                     }
                 case "wmp":
                     {
                         WmpBitmapDecoder dec = new WmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs = dec.Frames[0];
+                        BitmapSource bs;
+                        if (dec.Preview != null)
+                        {
+                            bs = dec.Preview;
+                        }
+                        else
+                        {
+                            bs = dec.Frames[0];
+                        }
                         return bs;
                     }
                 default:

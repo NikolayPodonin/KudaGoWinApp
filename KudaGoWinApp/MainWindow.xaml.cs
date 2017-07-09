@@ -52,8 +52,12 @@ namespace KudaGoWinApp
             labelStyle = new Style();
             labelStyle.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
             labelStyle.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.White) });
+            labelStyle.Setters.Add(new Setter { Property = Control.BackgroundProperty, Value = new SolidColorBrush(Colors.Brown) });
+            labelStyle.Setters.Add(new Setter { Property = Control.HorizontalContentAlignmentProperty, Value = HorizontalAlignment.Left });
+            labelStyle.Setters.Add(new Setter { Property = Control.HorizontalAlignmentProperty, Value = HorizontalAlignment.Left });
+            labelStyle.Setters.Add(new Setter { Property = Control.VerticalAlignmentProperty, Value = VerticalAlignment.Top });
 
-            string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates";
+            string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates&page_size=10";
             var eventList = DownloadEvents(link);
             FillEvents(eventList);
 
@@ -172,10 +176,9 @@ namespace KudaGoWinApp
                 categSuff = "";
             }
             g_Image.Children.Clear();
-            string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates" + categSuff;
+            string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates&page_size=10" + categSuff;
             var eventList = DownloadEvents(link);
             FillEvents(eventList);
-            nextPageEvents = DownloadEvents(nextPage);
         }
     }
 }
