@@ -9,8 +9,13 @@ namespace KudaGoClassLibrary
 {
     public class EventCategorie
     {
-        public string Name { get; set; }
-        public string Slug { get; set; }
+        public string name { get; set; }
+        public string slug { get; set; }
+
+        public override string ToString()
+        {
+            return name;
+        }
     }
 
     public class EventsParsing

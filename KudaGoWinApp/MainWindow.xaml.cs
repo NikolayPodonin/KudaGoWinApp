@@ -24,79 +24,109 @@ namespace KudaGoWinApp
     public partial class MainWindow : Window
     {
         string nextPage;
+        WebClient webClient;
         int i = 0;
+        Style labelStyle;
+        DateTime time;
+        List<Event> nextPageEvents;
+        string categSuff;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            using (webClient = new WebClient())
+            {
+                webClient.Encoding = Encoding.UTF8;
+                var response = webClient.DownloadString(@"https://kudago.com/public-api/v1.3/event-categories/");
+                var categories = JsonConvert.DeserializeObject<List<EventCategorie>>(response);
+                foreach(EventCategorie cat in categories)
+                {
+                    lv_Categories.Items.Add(cat);
+                }
+            }
+
+            nextPageEvents = new List<Event>();
+            categSuff = "";
+
+            labelStyle = new Style();
+            labelStyle.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
+            labelStyle.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.White) });
+
             string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates";
-            MainFunction(link);
+            var eventList = DownloadEvents(link);
+            FillEvents(eventList);
+
+            time = DateTime.Now;
         }        
 
-        public void MainFunction(string link)
+        private List<Event> DownloadEvents(string link)
         {
-            using (var webClient = new WebClient())
+            using (webClient)
             {
                 //webClient.BaseAddress = "https://kudago.com/public-api/v1.3/event-categories/";
                 //webClient.QueryString.Add("lang", "en");
                 //webClient.QueryString.Add("fields", "name");
-                webClient.Encoding = Encoding.UTF8;
+
                 var response = webClient.DownloadString(link);
-                
+
                 var events = JsonConvert.DeserializeObject<EventsParsing>(response);
                 nextPage = events.next;
 
-                Style labelStyle = new Style();
-                labelStyle.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
-                labelStyle.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.White) });
+                response = webClient.DownloadString(nextPage);
 
-                //l_Name.FontFamily = new FontFamily("Segoe UI Semibold");
-                
-                foreach (Event ev in events.results)
-                {
-                    if(ev.images.Count > 0)
-                    {
-                        g_Image.RowDefinitions.Add(new RowDefinition());
+                var nextEvents = JsonConvert.DeserializeObject<EventsParsing>(response);
+                nextPageEvents = events.results;
+                nextPage = events.next;
 
-                        System.Windows.Controls.Image image = new System.Windows.Controls.Image();
-                        image.Source = StaticClass.ImageSourceReturn(ev.images[0].image);
-                        
-                        int n = g_Image.Children.Add(image);
-                        Grid.SetRow(g_Image.Children[n], i);
-                        g_Image.Children[n].Uid = "_1_" + ev.id;
-                        g_Image.Children[n].MouseUp += NewRD_MouseUp;
-                        g_Image.Children[n].TouchUp += NewRD_MouseUp;
-
-                        Label l_Name = new Label();
-                        l_Name.Content = ev.short_title;
-                        l_Name.Margin = new Thickness(10, 20, 0, 0);
-                        l_Name.Style = labelStyle;
-                        n = g_Image.Children.Add(l_Name);
-                        Grid.SetRow(g_Image.Children[n], i);
-                        g_Image.Children[n].Uid = "_2_" + ev.id;
-                        g_Image.Children[n].MouseUp += NewRD_MouseUp;
-                        g_Image.Children[n].TouchUp += NewRD_MouseUp;
-
-                        Label l_Date = new Label();
-                        l_Date.Content = ev.dates[0].StartDate.ToShortDateString();
-                        l_Date.VerticalAlignment = VerticalAlignment.Bottom;
-                        l_Date.HorizontalAlignment = HorizontalAlignment.Right;
-                        l_Date.Margin = new Thickness(0, 0, 10, 20);
-                        l_Date.Style = labelStyle;
-                        n = g_Image.Children.Add(l_Date);
-                        Grid.SetRow(g_Image.Children[n], i);
-                        g_Image.Children[n].Uid = "_3_" + ev.id;
-                        g_Image.Children[n].MouseUp += NewRD_MouseUp;
-                        g_Image.Children[n].TouchUp += NewRD_MouseUp;
-
-                        i++;
-                    }
-                }                
+                return events.results;
             }
         }
 
+        private void FillEvents(List<Event> results)
+        {
+            foreach (Event ev in results)
+            {
+                if (ev.images.Count > 0)
+                {
+                    g_Image.RowDefinitions.Add(new RowDefinition());
 
-        
+                    System.Windows.Controls.Image image = new System.Windows.Controls.Image();
+                    image.Source = StaticClass.ImageSourceReturn(ev.images[0].image);
+
+                    int n = g_Image.Children.Add(image);
+                    Grid.SetRow(g_Image.Children[n], i);
+                    g_Image.Children[n].Uid = "_1_" + ev.id;
+                    g_Image.Children[n].MouseUp += NewRD_MouseUp;
+                    g_Image.Children[n].TouchUp += NewRD_MouseUp;
+
+                    Label l_Name = new Label();
+                    l_Name.Content = ev.short_title;
+                    l_Name.Margin = new Thickness(10, 20, 0, 0);
+                    l_Name.Style = labelStyle;
+                    n = g_Image.Children.Add(l_Name);
+                    Grid.SetRow(g_Image.Children[n], i);
+                    g_Image.Children[n].Uid = "_2_" + ev.id;
+                    g_Image.Children[n].MouseUp += NewRD_MouseUp;
+                    g_Image.Children[n].TouchUp += NewRD_MouseUp;
+
+                    Label l_Date = new Label();
+                    l_Date.Content = ev.dates[0].StartDate.ToShortDateString();
+                    l_Date.VerticalAlignment = VerticalAlignment.Bottom;
+                    l_Date.HorizontalAlignment = HorizontalAlignment.Right;
+                    l_Date.Margin = new Thickness(0, 0, 10, 20);
+                    l_Date.Style = labelStyle;
+                    n = g_Image.Children.Add(l_Date);
+                    Grid.SetRow(g_Image.Children[n], i);
+                    g_Image.Children[n].Uid = "_3_" + ev.id;
+                    g_Image.Children[n].MouseUp += NewRD_MouseUp;
+                    g_Image.Children[n].TouchUp += NewRD_MouseUp;
+
+                    i++;
+                }
+            }
+        }
+                
         private void NewRD_MouseUp(object sender, EventArgs e)
         {
             DetailsWindow dw = new DetailsWindow(((UIElement)sender).Uid.Remove(0, 3));
@@ -105,11 +135,47 @@ namespace KudaGoWinApp
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
+            if (DateTime.Now - time < new TimeSpan(0, 0, 0, 1))
+            {
+                return;
+            }
             var scrollViewer = (ScrollViewer)sender;
             if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
             {
-                MainFunction(nextPage);
+                FillEvents(nextPageEvents);
+                nextPageEvents = DownloadEvents(nextPage + categSuff);
+                //MainFunction(nextPage);       
+
+                time = DateTime.Now;
+                //sv_Images.ScrollToVerticalOffset(scrollViewer.VerticalOffset);
             }
+        }
+
+        private void b_Categories_Click(object sender, RoutedEventArgs e)
+        {            
+            if(lv_Categories.SelectedItems.Count > 0)
+            {
+                var newCategSuff = @"&categories=";
+                foreach (var cat in lv_Categories.SelectedItems)
+                {
+                    newCategSuff += ((EventCategorie)cat).slug + ",";
+                }
+                newCategSuff = newCategSuff.Remove(newCategSuff.Count() - 1, 1);
+                if (newCategSuff == categSuff)
+                {
+                    return;
+                }
+                categSuff = newCategSuff;
+            }     
+            else
+            {
+                categSuff = "";
+            }
+            g_Image.Children.Clear();
+            string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates" + categSuff;
+            var eventList = DownloadEvents(link);
+            FillEvents(eventList);
+            nextPageEvents = DownloadEvents(nextPage);
         }
     }
 }

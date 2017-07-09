@@ -14,11 +14,19 @@
             </LinearGradientBrush>
         </Grid.Background>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="222*"/>
+            <ColumnDefinition Width="95*"/>
         </Grid.ColumnDefinitions>
-        <ScrollViewer Grid.Column="0" Height="auto" Width="auto" ScrollChanged="ScrollViewer_ScrollChanged">
+        <ScrollViewer Name="sv_Images" Grid.Column="0" Height="auto" Width="auto" ScrollChanged="ScrollViewer_ScrollChanged">
             <Grid x:Name="g_Image" Height="Auto" Width="Auto"/>
         </ScrollViewer>
+        <ListView x:Name="lv_Categories" Grid.Column="1" SelectionMode="Multiple" Margin="0,0,0,37">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button x:Name="b_Categories" Content="Выдать" Grid.Column="1" Margin="0" VerticalAlignment="Bottom" Height="37" Click="b_Categories_Click"/>
     </Grid>
 </Window>
