@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KudaGoWinApp"
         mc:Ignorable="d"
-        Title="DetailsWindow" Height="531.14" Width="603.302">
+        Title="DetailsWindow" Height="531.14" Width="603.302"
+         Icon=".\resources\icon.jpg">
     <Grid>
         <ScrollViewer HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <ScrollViewer.Background>
