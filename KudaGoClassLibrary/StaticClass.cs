@@ -11,111 +11,119 @@ namespace KudaGoClassLibrary
     {
         public static BitmapSource ImageSourceReturn(string uri)
         {
-            Uri myUri = new Uri(uri);
-            switch (myUri.Segments.Last().Substring(myUri.Segments.Last().Count() - 3, 3))
+            try
             {
-                case "jpg":
-                    {
-                        JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs;
-                        if (dec.Preview != null)
+                Uri myUri = new Uri(uri);
+                switch (myUri.Segments.Last().Substring(myUri.Segments.Last().Count() - 3, 3))
+                {
+                    case "jpg":
                         {
-                             bs = dec.Preview;
+                            JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        else
+                    case "peg":
                         {
-                             bs = dec.Frames[0];
+                            JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        return bs;
-                    }
-                case "peg":
-                    {
-                        JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs;
-                        if (dec.Preview != null)
+                    case "bmp":
                         {
-                            bs = dec.Preview;
+                            BmpBitmapDecoder dec = new BmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        else
+                    case "png":
                         {
-                            bs = dec.Frames[0];
+                            PngBitmapDecoder dec = new PngBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        return bs;
-                    }
-                case "bmp":
-                    {
-                        BmpBitmapDecoder dec = new BmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs;
-                        if (dec.Preview != null)
+                    case "gif":
                         {
-                            bs = dec.Preview;
+                            GifBitmapDecoder dec = new GifBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        else
+                    case "iff":
                         {
-                            bs = dec.Frames[0];
+                            TiffBitmapDecoder dec = new TiffBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        return bs;
-                    }
-                case "png":
-                    {
-                        PngBitmapDecoder dec = new PngBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs;
-                        if (dec.Preview != null)
+                    case "wmp":
                         {
-                            bs = dec.Preview;
+                            WmpBitmapDecoder dec = new WmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        else
+                    case "JPG":
                         {
-                            bs = dec.Frames[0];
+                            JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        return bs;
-                    }
-                case "gif":
-                    {
-                        GifBitmapDecoder dec = new GifBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs;
-                        if (dec.Preview != null)
+                    case "PEG":
                         {
-                            bs = dec.Preview;
+                            JpegBitmapDecoder dec = new JpegBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            int f = dec.Frames.Count;
+                            BitmapSource bs = new BitmapImage(myUri);
+
+                            return bs;
                         }
-                        else
+                    case "BMP":
                         {
-                            bs = dec.Frames[0];
+                            BmpBitmapDecoder dec = new BmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        return bs;
-                    }
-                case "iff":
-                    {
-                        TiffBitmapDecoder dec = new TiffBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs;
-                        if (dec.Preview != null)
+                    case "PNG":
                         {
-                            bs = dec.Preview;
+                            PngBitmapDecoder dec = new PngBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        else
+                    case "GIF":
                         {
-                            bs = dec.Frames[0];
+                            GifBitmapDecoder dec = new GifBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        return bs;
-                    }
-                case "wmp":
-                    {
-                        WmpBitmapDecoder dec = new WmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                        BitmapSource bs;
-                        if (dec.Preview != null)
+                    case "IFF":
                         {
-                            bs = dec.Preview;
+                            TiffBitmapDecoder dec = new TiffBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        else
+                    case "WMP":
                         {
-                            bs = dec.Frames[0];
+                            WmpBitmapDecoder dec = new WmpBitmapDecoder(myUri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                            BitmapSource bs = dec.Frames[0];
+
+                            return bs;
                         }
-                        return bs;
-                    }
-                default:
-                    {
-                        return null;
-                    }
+                    default:
+                        {                            
+                            return null;
+                        }
+                }
+            }
+            catch(Exception e)
+            {                
+                return null;
             }
         }
     }

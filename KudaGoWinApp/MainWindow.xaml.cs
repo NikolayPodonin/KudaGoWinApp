@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,67 +24,78 @@ namespace KudaGoWinApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        string nextPage;
         WebClient webClient;
         int i = 0;
         Style labelStyle;
         DateTime time;
-        List<Event> nextPageEvents;
-        string categSuff;
+        EventsParsing nextPageEvents;
+        string categorySuffics;
+        Thread downloader;
 
         public MainWindow()
         {
-            InitializeComponent();
-
-            using (webClient = new WebClient())
+            try
             {
-                webClient.Encoding = Encoding.UTF8;
-                var response = webClient.DownloadString(@"https://kudago.com/public-api/v1.3/event-categories/");
-                var categories = JsonConvert.DeserializeObject<List<EventCategorie>>(response);
-                foreach(EventCategorie cat in categories)
+                InitializeComponent();
+
+                using (webClient = new WebClient())
                 {
-                    lv_Categories.Items.Add(cat);
+                    webClient.Encoding = Encoding.UTF8;
+                    var response = webClient.DownloadString(@"https://kudago.com/public-api/v1.3/event-categories/");
+                    var categories = JsonConvert.DeserializeObject<List<EventCategorie>>(response);
+                    foreach (EventCategorie cat in categories)
+                    {
+                        lv_Categories.Items.Add(cat);
+                    }
                 }
+
+                categorySuffics = "";
+
+                labelStyle = new Style();
+                labelStyle.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
+                labelStyle.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.White) });
+                labelStyle.Setters.Add(new Setter { Property = Control.BackgroundProperty, Value = new SolidColorBrush(Colors.Brown) });
+                labelStyle.Setters.Add(new Setter { Property = Control.HorizontalContentAlignmentProperty, Value = HorizontalAlignment.Left });
+                labelStyle.Setters.Add(new Setter { Property = Control.HorizontalAlignmentProperty, Value = HorizontalAlignment.Left });
+                labelStyle.Setters.Add(new Setter { Property = Control.VerticalAlignmentProperty, Value = VerticalAlignment.Top });
+
+                string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates&page_size=10";
+                var events = DownloadEvents(link);
+                FillEvents(events.results);
+
+                nextPageEvents = DownloadEvents(events.next);
+
+                time = DateTime.Now;
+
+                downloader = new Thread(DownloaderEventsThread);
             }
+            catch (Exception e)
+            {
+                MessageBox.Show("Произошла ошибка: " + e.Message, "KudaGoWinApp");
+            }
+        }
 
-            nextPageEvents = new List<Event>();
-            categSuff = "";
+        private void DownloaderEventsThread(object link)
+        {
+            lock (nextPageEvents)
+            {
+                if(link.GetType() == typeof(string))
+                {
+                    nextPageEvents = DownloadEvents((string)link);
+                }
+                else
+                {
+                    throw new ArgumentException("Неверный запрос");
+                }                
+            }
+        }
 
-            labelStyle = new Style();
-            labelStyle.Setters.Add(new Setter { Property = Control.FontFamilyProperty, Value = new FontFamily("Verdana") });
-            labelStyle.Setters.Add(new Setter { Property = Control.ForegroundProperty, Value = new SolidColorBrush(Colors.White) });
-            labelStyle.Setters.Add(new Setter { Property = Control.BackgroundProperty, Value = new SolidColorBrush(Colors.Brown) });
-            labelStyle.Setters.Add(new Setter { Property = Control.HorizontalContentAlignmentProperty, Value = HorizontalAlignment.Left });
-            labelStyle.Setters.Add(new Setter { Property = Control.HorizontalAlignmentProperty, Value = HorizontalAlignment.Left });
-            labelStyle.Setters.Add(new Setter { Property = Control.VerticalAlignmentProperty, Value = VerticalAlignment.Top });
-
-            string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates&page_size=10";
-            var eventList = DownloadEvents(link);
-            FillEvents(eventList);
-
-            time = DateTime.Now;
-        }        
-
-        private List<Event> DownloadEvents(string link)
+        private EventsParsing DownloadEvents(string link)
         {
             using (webClient)
             {
-                //webClient.BaseAddress = "https://kudago.com/public-api/v1.3/event-categories/";
-                //webClient.QueryString.Add("lang", "en");
-                //webClient.QueryString.Add("fields", "name");
-
                 var response = webClient.DownloadString(link);
-
-                var events = JsonConvert.DeserializeObject<EventsParsing>(response);
-                nextPage = events.next;
-
-                response = webClient.DownloadString(nextPage);
-
-                var nextEvents = JsonConvert.DeserializeObject<EventsParsing>(response);
-                nextPageEvents = events.results;
-                nextPage = events.next;
-
-                return events.results;
+                return JsonConvert.DeserializeObject<EventsParsing>(response);
             }
         }
 
@@ -96,7 +108,18 @@ namespace KudaGoWinApp
                     g_Image.RowDefinitions.Add(new RowDefinition());
 
                     System.Windows.Controls.Image image = new System.Windows.Controls.Image();
-                    image.Source = StaticClass.ImageSourceReturn(ev.images[0].image);
+                    ImageSource source = new BitmapImage();
+
+                    source = StaticClass.ImageSourceReturn(ev.images[0].image);
+                    if (source != null)
+                    {
+                        image.Source = source;
+                    }
+                    else
+                    {
+                        image.Source = new BitmapImage(new Uri(@"resources\no_image.jpg", UriKind.Relative));
+                    }
+                     
 
                     int n = g_Image.Children.Add(image);
                     Grid.SetRow(g_Image.Children[n], i);
@@ -130,55 +153,89 @@ namespace KudaGoWinApp
                 }
             }
         }
-                
+
         private void NewRD_MouseUp(object sender, EventArgs e)
         {
-            DetailsWindow dw = new DetailsWindow(((UIElement)sender).Uid.Remove(0, 3));
-            dw.Show();
+            try
+            {
+                DetailsWindow dw = new DetailsWindow(((UIElement)sender).Uid.Remove(0, 3));
+                dw.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка: " + ex.Message, "KudaGoWinApp");
+            }
         }
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            if (DateTime.Now - time < new TimeSpan(0, 0, 0, 1))
+            try
             {
-                return;
-            }
-            var scrollViewer = (ScrollViewer)sender;
-            if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
-            {
-                FillEvents(nextPageEvents);
-                nextPageEvents = DownloadEvents(nextPage + categSuff);
-                //MainFunction(nextPage);       
+                if (downloader.IsAlive)
+                {
+                    return;
+                }
+                if (DateTime.Now - time < new TimeSpan(0, 0, 0, 1))
+                {
+                    return;
+                }
+                var scrollViewer = (ScrollViewer)sender;
+                if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+                {
+                    lock (nextPageEvents)
+                    {
+                        FillEvents(nextPageEvents.results);
+                    }
 
-                time = DateTime.Now;
-                //sv_Images.ScrollToVerticalOffset(scrollViewer.VerticalOffset);
+                    downloader = new Thread(DownloaderEventsThread);
+                    downloader.Start(nextPageEvents.next + categorySuffics);
+
+                    time = DateTime.Now;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка: " + ex.Message, "KudaGoWinApp");
             }
         }
 
         private void b_Categories_Click(object sender, RoutedEventArgs e)
-        {            
-            if(lv_Categories.SelectedItems.Count > 0)
+        {
+            try
             {
-                var newCategSuff = @"&categories=";
-                foreach (var cat in lv_Categories.SelectedItems)
+                if (lv_Categories.SelectedItems.Count > 0)
                 {
-                    newCategSuff += ((EventCategorie)cat).slug + ",";
+                    var newCategSuff = @"&categories=";
+                    foreach (var cat in lv_Categories.SelectedItems)
+                    {
+                        newCategSuff += ((EventCategorie)cat).slug + ",";
+                    }
+                    newCategSuff = newCategSuff.Remove(newCategSuff.Count() - 1, 1);
+                    if (newCategSuff == categorySuffics)
+                    {
+                        return;
+                    }
+                    categorySuffics = newCategSuff;
                 }
-                newCategSuff = newCategSuff.Remove(newCategSuff.Count() - 1, 1);
-                if (newCategSuff == categSuff)
+                else
                 {
-                    return;
+                    categorySuffics = "";
                 }
-                categSuff = newCategSuff;
-            }     
-            else
-            {
-                categSuff = "";
+                g_Image.Children.Clear();
+                string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates&page_size=10" + categorySuffics;
+                var eventList = DownloadEvents(link);
+                FillEvents(eventList.results);
+                if (downloader.IsAlive)
+                {
+                    downloader.Join();
+                }
+                downloader = new Thread(DownloaderEventsThread);
+                downloader.Start(link + @"&page=2");
             }
-            g_Image.Children.Clear();
-            string link = @"https://kudago.com/public-api/v1.3/events/?fields=id,dates,short_title,categories,images,&expand=dates&page_size=10" + categSuff;
-            var eventList = DownloadEvents(link);
-            FillEvents(eventList);
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка: " + ex.Message, "KudaGoWinApp");
+            }
         }
     }
 }
